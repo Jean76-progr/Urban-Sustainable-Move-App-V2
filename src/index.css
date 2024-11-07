@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles de base pour la carte */
+.leaflet-container {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Style pour le mode sombre */
+.map-dark {
+    filter: brightness(0.8) contrast(1.2);
+}
+
+/* Superposition des contrôles */
+.map-controls {
+    z-index: 1000;
+}
+
+/* Assure que le menu est au-dessus de la carte */
+.side-menu {
+    z-index: 1100;
+}
+
+/* Ajustements pour les popups et contrôles Leaflet */
+.leaflet-popup {
+    z-index: 1200;
+}
+
+.leaflet-control {
+    z-index: 1300;
+}

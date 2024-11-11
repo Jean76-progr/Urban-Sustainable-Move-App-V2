@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { SideMenu } from '../Layout/SideMenu';
+import { motion, AnimatePresence } from 'framer-motion';
 import { transportStops, getStopIcon } from '../../data/transportStops';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -59,13 +60,23 @@ const MainMap = () => {
 
     return (
         <div className="w-full h-screen relative">
-            <button
-                onClick={() => setIsSideMenuOpen(true)}
-                className="absolute top-4 left-4 z-[2000] bg-white p-2 rounded-lg shadow-lg hover:bg-gray-50"
-            >
-                <Bars3Icon className="h-6 w-6 text-gray-600" />
-            </button>
+            {/* Menu Button */}
+            <AnimatePresence>
+                {!isSideMenuOpen && (
+                    <motion.button
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => setIsSideMenuOpen(true)}
+                        className="absolute top-4 left-4 z-[2000] bg-white p-2 rounded-lg shadow-lg hover:bg-gray-50 hover:shadow-xl transition-all duration-300"
+                    >
+                        <Bars3Icon className="h-6 w-6 text-gray-600" />
+                    </motion.button>
+                )}
+            </AnimatePresence>
 
+            {/* Side Menu */}
             <SideMenu
                 isOpen={isSideMenuOpen}
                 onClose={() => setIsSideMenuOpen(false)}
@@ -74,14 +85,15 @@ const MainMap = () => {
                 onFilterChange={handleFilterChange}
             />
 
-            <MapContainer 
-                center={position} 
-                zoom={14} 
+            {/* Map */}
+            <MapContainer
+                center={position}
+                zoom={14}
                 style={{ height: "100%", width: "100%" }}
                 className={isDarkMode ? 'map-dark' : ''}
             >
                 <TileLayer
-                    url={isDarkMode 
+                    url={isDarkMode
                         ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     }
@@ -103,7 +115,7 @@ const MainMap = () => {
                                         <p className="font-medium">Lignes :</p>
                                         <div className="flex flex-wrap gap-1 mt-1">
                                             {stop.lines.map(line => (
-                                                <span 
+                                                <span
                                                     key={line}
                                                     className="px-2 py-1 bg-gray-100 rounded-full text-sm"
                                                 >

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UserCircleIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function AuthDropdown({ onAuthClick, user, onLogout }) {
@@ -17,56 +17,50 @@ export function AuthDropdown({ onAuthClick, user, onLogout }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const menuVariants = {
-        hidden: { opacity: 0, y: -5, scale: 0.95 },
-        visible: { 
-            opacity: 1, 
-            y: 0, 
-            scale: 1,
-            transition: { type: "spring", bounce: 0.3 }
-        },
-        exit: { 
-            opacity: 0,
-            y: -5,
-            scale: 0.95,
-            transition: { duration: 0.2 }
-        }
-    };
-
     if (user) {
         return (
             <div className="absolute top-4 right-4 z-[2000]" ref={dropdownRef}>
                 <motion.button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center space-x-2 bg-white rounded-lg shadow-lg p-3 hover:bg-gray-50"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                 >
-                    <UserCircleIcon className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-medium">{user.email}</span>
-                    <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+                    <div className="relative w-full h-full">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            {user.displayName ? (
+                                <span className="text-lg font-semibold">
+                                    {user.displayName.charAt(0).toUpperCase()}
+                                </span>
+                            ) : (
+                                <UserCircleIcon className="w-6 h-6" />
+                            )}
+                        </div>
+                    </div>
                 </motion.button>
 
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            variants={menuVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100"
                         >
-                            <div className="py-1">
-                                <motion.button
-                                    whileHover={{ backgroundColor: "#f3f4f6" }}
+                            <div className="p-3 border-b border-gray-100">
+                                <p className="text-sm font-medium text-gray-900">{user.email}</p>
+                                <p className="text-xs text-gray-500 mt-1">Connecté</p>
+                            </div>
+                            <div className="p-2">
+                                <button
                                     onClick={() => {
                                         onLogout();
                                         setIsOpen(false);
                                     }}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600"
+                                    className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors duration-150"
                                 >
                                     Se déconnecter
-                                </motion.button>
+                                </button>
                             </div>
                         </motion.div>
                     )}
@@ -79,37 +73,40 @@ export function AuthDropdown({ onAuthClick, user, onLogout }) {
         <div className="absolute top-4 right-4 z-[2000]" ref={dropdownRef}>
             <motion.button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition-colors"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-lg hover:shadow-xl transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
             >
-                <span>Compte</span>
-                <ChevronDownIcon className="h-4 w-4" />
+                <UserCircleIcon className="w-6 h-6 text-gray-600" />
             </motion.button>
 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        variants={menuVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100"
                     >
-                        <div className="py-1">
-                            {['login', 'register'].map((mode) => (
-                                <motion.button
-                                    key={mode}
-                                    whileHover={{ backgroundColor: "#f3f4f6" }}
-                                    onClick={() => {
-                                        onAuthClick(mode);
-                                        setIsOpen(false);
-                                    }}
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-700"
-                                >
-                                    {mode === 'login' ? 'Se connecter' : 'Créer un compte'}
-                                </motion.button>
-                            ))}
+                        <div className="p-2 space-y-1">
+                            <button
+                                onClick={() => {
+                                    onAuthClick('login');
+                                    setIsOpen(false);
+                                }}
+                                className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition-colors duration-150"
+                            >
+                                Se connecter
+                            </button>
+                            <button
+                                onClick={() => {
+                                    onAuthClick('register');
+                                    setIsOpen(false);
+                                }}
+                                className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition-colors duration-150"
+                            >
+                                Créer un compte
+                            </button>
                         </div>
                     </motion.div>
                 )}
